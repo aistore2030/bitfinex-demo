@@ -2,5 +2,74 @@
 
 .container {
     flex: 1;
+    @include flex(column, stretch);
+    background: $color-darkest-grey;
+    margin: 1rem;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.caption {
+    @include flex(row, baseline);
+}
+
+.section {
+    font-size: 1.4rem;
+    text-transform: uppercase;
+}
+
+.pair {
+    margin-left: 1rem;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    color: $color-light-grey;
+}
+
+.source {
+    flex: 1;
+    text-align: right;
+    font-size: 1.2rem;
+    text-transform: capitalize;
     color: $color-white;
+}
+
+.head {
+    @include flex(row, center);
+    margin-top: 1rem;
+    font-size: 1.3rem;
+    color: $color-light-grey;
+    text-transform: uppercase;
+}
+
+.table {
+    @include flex(column, stretch);
+}
+
+.trade {
+    @include flex(row, center);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.3rem;
+}
+
+.trade:global(.positive) {
+    background: $color-dark-green-transparent;
+}
+
+.trade:global(.negative) {
+    background: $color-dark-red-transparent;
+}
+
+.time {
+    flex: 1;
+    text-align: right;
+}
+
+.price {
+    flex: 1;
+    text-align: right;
+}
+
+.amount {
+    flex: 1;
+    text-align: right;
 }

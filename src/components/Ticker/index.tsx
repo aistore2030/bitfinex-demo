@@ -28,7 +28,7 @@ export const Ticker = connect(mapStateToProps)(({ pair, ticker }: Props) => {
             </div>
             <div className={styles.column}>
                 <div className={styles.price}>{price}</div>
-                <div className={changeClassName}>{priceDayChange} ({priceDayChangePerc}%) USDT</div>
+                <div className={changeClassName}>{priceDayChange} ({priceDayChangePerc}%)</div>
                 <div className={styles.low}>high {priceDayHigh}</div>
             </div>
         </div >

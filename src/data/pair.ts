@@ -4,6 +4,7 @@ import { createAction, createReducer, Dispatch } from 'redux-act'
 import { Store } from '../store'
 
 import { connect, disconnect } from './connection'
+import { flushTrades } from './trades';
 
 
 export const setPair = (pair: string) => (dispatch: Dispatch, getState: () => Store) => {
@@ -11,6 +12,9 @@ export const setPair = (pair: string) => (dispatch: Dispatch, getState: () => St
     if (available.indexOf(pair) < 0) return
 
     dispatch(handleSetPair(pair))
+
+    // cleanup trades
+    dispatch(flushTrades())
 
     // after pair set - need to reconnect
     disconnect()(dispatch)
