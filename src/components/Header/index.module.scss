@@ -2,5 +2,8 @@
 
 .container {
     flex: 2;
-    color: $color-white;
+    background: $color-darkest-grey;
+    margin: 1rem 0 0 1rem;
+    padding: 1rem;
+    box-sizing: border-box;
 }

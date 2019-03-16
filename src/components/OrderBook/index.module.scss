@@ -2,5 +2,76 @@
 
 .container {
     flex: 2;
-    color: $color-white;
+    @include flex(column, stretch);
+    background: $color-darkest-grey;
+    margin: 1rem 0 1rem 1rem;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.caption {
+    @include flex(row, baseline);
+}
+
+.section {
+    font-size: 1.4rem;
+    text-transform: uppercase;
+}
+
+.pair {
+    margin-left: 1rem;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    color: $color-light-grey;
+}
+
+.books {
+    @include flex(row, flex-start);
+}
+
+.book {
+    flex: 1;
+    @include flex(column, stretch);
+}
+
+.book:last-child {
+    margin-left: 1rem;
+}
+
+.head {
+    @include flex(row, center);
+    margin-top: 1rem;
+    font-size: 1.3rem;
+    color: $color-light-grey;
+    text-transform: uppercase;
+}
+
+.table {
+    @include flex(column, stretch);
+}
+
+.page {
+    @include flex(row, center);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.3rem;
+}
+
+.count {
+    flex: 1;
+    text-align: right;
+}
+
+.amount {
+    flex: 1;
+    text-align: right;
+}
+
+.total {
+    flex: 1;
+    text-align: right;
+}
+
+.price {
+    flex: 1;
+    text-align: right;
 }

@@ -4,6 +4,7 @@ import { createAction, createReducer, Dispatch } from 'redux-act'
 import { Connection } from '../api/Connection'
 import { Store } from '../store'
 
+import { createOrderBookChannel } from './orderBook'
 import { createTickerChannel } from './ticker'
 import { createTradesChannel } from './trades'
 
@@ -16,6 +17,7 @@ Object.defineProperty(window, 'c', { get: () => connection })
 export const connect = () => (dispatch: Dispatch, getState: () => Store) => {
     connection.attach(createTickerChannel(getState().pair.selected, dispatch))
     connection.attach(createTradesChannel(getState().pair.selected, dispatch))
+    connection.attach(createOrderBookChannel(getState().pair.selected, dispatch))
 
     dispatch(handleConnect())
 }

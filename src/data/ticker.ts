@@ -35,7 +35,7 @@ export const reducer = createReducer<State>(
 const parseTicker = (data: number[]): State => ({
     price: data[6],
     priceDayChange: data[4],
-    priceDayChangePerc: Math.round(data[5] * 10000) / 100,
+    priceDayChangePerc: Number(data[5].toFixed(2)),
     priceDayHigh: data[8],
     priceDayLow: data[9],
     volume: Math.round(data[7] * data[6]),

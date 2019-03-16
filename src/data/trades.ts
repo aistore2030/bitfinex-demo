@@ -30,7 +30,7 @@ export const reducer = createReducer<State>(
     {
         [pushTrades.toString()]: (state, value: Trade[]) => chain(state.concat(value))
             .sortBy(['time']).reverse().value().slice(-TRADES_COUNT),
-        [flushTrades.toString()]: (state, value: Trade[]) => [],
+        [flushTrades.toString()]: () => [],
     },
     [],
 ) as Reducer<State>
