@@ -5,13 +5,17 @@ import { Connection } from '../api/Connection'
 import { Store } from '../store'
 
 import { createTickerChannel } from './ticker'
+import { createTradesChannel } from './trades'
 
 // open connection initially
 const connection = new Connection()
 connection.open()
 
+Object.defineProperty(window, 'c', { get: () => connection })
+
 export const connect = () => (dispatch: Dispatch, getState: () => Store) => {
     connection.attach(createTickerChannel(getState().pair.selected, dispatch))
+    connection.attach(createTradesChannel(getState().pair.selected, dispatch))
 
     dispatch(handleConnect())
 }
