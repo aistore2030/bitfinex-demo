@@ -2,5 +2,48 @@
 
 .container {
     flex: 1;
-    color: $color-white;
+    @include flex(row, center, space-evenly);
+    background: $color-darkest-grey;
+    margin: 1rem;
+}
+
+.column {
+    flex: 1;
+    @include flex(column, center);
+}
+
+.name {
+    font-size: 2rem;
+}
+
+.price {
+    font-size: 2rem;
+}
+
+.volume {
+    text-transform: uppercase;
+    font-size: 1.3rem;
+}
+
+.change {
+    text-transform: uppercase;
+    font-size: 1.3rem;
+}
+
+.change:global(.positive) {
+    color: $color-dark-green;
+}
+
+.change.negative {
+    color: $color-dark-red;
+}
+
+.low {
+    text-transform: uppercase;
+    font-size: 1.3rem;
+}
+
+.high {
+    text-transform: uppercase;
+    font-size: 1.3rem;
 }

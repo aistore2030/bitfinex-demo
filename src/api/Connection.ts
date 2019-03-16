@@ -17,6 +17,7 @@ const HEART_BEAT = 'hb'
 const INITIAL_HEARTBEAT_TIMEOUT = 20000
 const HEARTBEAT_TIMEOUT = 10000
 const PING_TIMEOUT = 5000
+const MSG_LIFETIME = 3000
 
 export type Data = MessageEvent['data']
 
@@ -154,13 +155,13 @@ export class Connection {
     }
 
 
-    private error = (msg: unknown) => toast.error(this.message(msg))
+    private error = (msg: unknown) => toast.error(this.message(msg), MSG_LIFETIME)
 
-    private warning = (msg: unknown) => toast.warning(this.message(msg))
+    private warning = (msg: unknown) => toast.warning(this.message(msg), MSG_LIFETIME)
 
-    private info = (msg: unknown) => toast.info(this.message(msg))
+    private info = (msg: unknown) => toast.info(this.message(msg), MSG_LIFETIME)
 
-    private success = (msg: unknown) => toast.success(this.message(msg))
+    private success = (msg: unknown) => toast.success(this.message(msg), MSG_LIFETIME)
 
     private message(msg: unknown) {
         const { channel, subscription } = this
