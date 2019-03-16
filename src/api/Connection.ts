@@ -42,8 +42,7 @@ export class Connection {
 
         this.channels.forEach(channel => ws.send(JSON.stringify({
             event: Event.Unsubscribe,
-            channel: channel.name,
-            ...channel.subscription,
+            chanId: channel.id,
         })))
 
         ws.close()
@@ -74,8 +73,7 @@ export class Connection {
         if (ws.readyState === WebSocket.OPEN)
             ws.send(JSON.stringify({
                 event: Event.Unsubscribe,
-                channel: channel.name,
-                ...channel.subscription,
+                chanId: channel.id,
             }))
     }
 

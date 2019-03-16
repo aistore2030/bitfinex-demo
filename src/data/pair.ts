@@ -17,6 +17,10 @@ export const setPair = (pair: string) => (dispatch: Dispatch, getState: () => St
     connect()(dispatch, getState)
 }
 
+export const actions = { setPair }
+
+
+
 const handleSetPair = createAction<string>()
 
 export type State = {
