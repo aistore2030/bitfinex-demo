@@ -48,25 +48,29 @@ export const reducer = createReducer<State>(
                 .sortBy(['price', 'amount']).value()
         },
         [updatePage.toString()]: (state: State, page: Page) => {
-            const oldPage = page.amount > 0
+            const old = page.amount > 0
                 ? state.find(p => p.amount > 0 && p.price === page.price)
                 : state.find(p => p.amount < 0 && p.price === page.price)
 
             // replace old page with new one
-            const result = state.filter(p => p !== oldPage)
-            if (oldPage) page.amount += oldPage.amount
+            const interim = state.filter(p => p !== old)
+            if (old) page.amount += old.amount
 
-            console.warn((oldPage ? 'update' : 'add'), 'page', page.price, page.count, page.amount)
-
-            return chain(result.concat(page))
+            const result = chain(interim.concat(page))
                 .sortBy(['price', 'amount']).value()
+
+            console.warn((old ? 'upd' : 'add'), page.price, page.count, page.amount, state.length, '->', result.length)
+
+            return result
         },
         [deletePage.toString()]: (state: State, page: Page) => {
-            console.warn('delete page', page.price, page.count, page.amount)
+            const result = page.amount === 1
+                ? state.filter(p => p.amount < 0 || p.price !== page.price)
+                : state.filter(p => p.amount > 0 || p.price !== page.price)
 
-            return page.amount === 1
-                ? state.filter(p => p.amount > 0 && p.price === page.price)
-                : state.filter(p => p.amount < 0 && p.price === page.price)
+            console.warn('del', page.price, page.count, page.amount, state.length, '->', result.length)
+
+            return result
         },
         [flushOrderBook.toString()]: () => [],
     },
