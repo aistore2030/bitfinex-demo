@@ -68,7 +68,7 @@ export class Connection {
         if (index < 0)
             return
 
-        this.channels.splice(index, 1)
+        this.channels = this.channels.filter(c => c !== channel)
 
         if (ws.readyState === WebSocket.OPEN)
             ws.send(JSON.stringify({
