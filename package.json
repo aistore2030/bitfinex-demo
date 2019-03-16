@@ -11,7 +11,9 @@
     "react-redux": "6.0.1",
     "react-router-dom": "4.4.0",
     "react-toasts": "3.0.1",
-    "redux": "4.0.1"
+    "redux": "4.0.1",
+    "redux-act": "1.7.4",
+    "redux-thunk": "2.3.0"
   },
   "devDependencies": {
     "@types/classnames": "2.2.7",

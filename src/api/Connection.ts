@@ -79,6 +79,8 @@ export class Connection {
             }))
     }
 
+    public readonly detachAll = () => this.channels.forEach(this.detach)
+
     private scheduleConnectionTest(timeout: number) {
         console.log(`scheduleConnectionTest in ${timeout}`)
         clearTimeout(this.ensureConnectedTimeoutId!)
