@@ -1,0 +1,73 @@
+@import 'common.scss';
+
+html {
+    width: 100%;
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body,
+#root {
+    width: 100%;
+    height: 100%;
+}
+
+#root {
+    @include flex(column, stretch);
+    background-color: $color-dark-grey;
+    color: $color-white;
+  }
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+@media screen and (max-width: 575px) {
+
+    html,
+    body {
+        font-size: 8px;
+    }
+}
+
+@media screen and (min-width: 576px) {
+
+    html,
+    body {
+        font-size: 9px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+
+    html,
+    body {
+        font-size: 10px;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+
+    html,
+    body {
+        font-size: 11px;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+
+    html,
+    body {
+        font-size: 12px;
+    }
+}
