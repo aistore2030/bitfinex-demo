@@ -133,7 +133,8 @@ export class Connection {
                 this.handleInfoEvent(eventData)
                 break
             case Event.Subscribed:
-                const channel = this.channels.find(c => isMatch(eventData, c.subscription))
+                const channel = this.channels
+                    .find(c => c.name === eventData.channel && isMatch(eventData, c.subscription))
                 if (channel) {
                     channel.id = eventData.chanId
                     this.success(`subscribed to ${eventData.chanId}`)
