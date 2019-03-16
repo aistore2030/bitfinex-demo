@@ -1,14 +1,7 @@
-// track active connections list as array of (subscription data, socket)
-// on maintenance code - close/open all connections +
-
-// methods:
-// connect - create new connection, returns disconnect method
-// pause/resume - to pause/resume all connections
-// every connection listens for heartbeat within 6 seconds
-// if no hb - send ping and await pong for a 1 second
-// if none - reopen connection
+import { isMatch } from 'lodash'
 import { ToastsStore as toast } from 'react-toasts'
 
+import { Channel } from './Channel'
 import { Event } from './Event'
 import { EventCode } from './EventCode'
 
@@ -22,49 +15,68 @@ const MSG_LIFETIME = 3000
 export type Data = MessageEvent['data']
 
 export class Connection {
-    private readonly channel: string
-    private readonly subscription: Object
-    private readonly handler: (data: Data) => void
     private ws: WebSocket | undefined
-    private channelId: number
+    private channels: Channel[] = []
     private ensureConnectedTimeoutId: NodeJS.Timeout | undefined
     private pingTimeoutId: NodeJS.Timeout | undefined
 
-    constructor(channel: string, subscription: Object, handler: (data: Data) => void) {
-        this.channel = channel
-        this.subscription = subscription
-        this.handler = handler
-        this.channelId = 0
-    }
-
     public readonly open = () => {
-        const { channel, subscription } = this
-
         const ws = this.ws = new WebSocket(ENDPOINT)
         ws.onmessage = this.handleMessage
         ws.onopen = () => {
             this.success('Connected')
-            ws.send(JSON.stringify({
+            this.channels.forEach(channel => ws.send(JSON.stringify({
                 event: Event.Subscribe,
-                channel,
-                ...subscription,
-            }))
+                channel: channel.name,
+                ...channel.subscription,
+            })))
         }
+
         this.scheduleConnectionTest(INITIAL_HEARTBEAT_TIMEOUT)
     }
 
     public readonly close = () => {
-        const { channel, subscription } = this
         const ws = this.ws!
 
         clearTimeout(this.ensureConnectedTimeoutId!)
 
-        ws.send(JSON.stringify({
+        this.channels.forEach(channel => ws.send(JSON.stringify({
             event: Event.Unsubscribe,
-            channel,
-            ...subscription,
-        }))
+            channel: channel.name,
+            ...channel.subscription,
+        })))
+
         ws.close()
+    }
+
+    public readonly attach = (channel: Channel) => {
+        const ws = this.ws!
+
+        this.channels.push(channel)
+
+        if (ws.readyState === WebSocket.OPEN)
+            ws.send(JSON.stringify({
+                event: Event.Subscribe,
+                channel: channel.name,
+                ...channel.subscription,
+            }))
+    }
+
+    public readonly detach = (channel: Channel) => {
+        const ws = this.ws!
+
+        const index = this.channels.indexOf(channel)
+        if (index < 0)
+            return
+
+        this.channels.splice(index, 1)
+
+        if (ws.readyState === WebSocket.OPEN)
+            ws.send(JSON.stringify({
+                event: Event.Unsubscribe,
+                channel: channel.name,
+                ...channel.subscription,
+            }))
     }
 
     private scheduleConnectionTest(timeout: number) {
@@ -79,7 +91,7 @@ export class Connection {
         const ws = this.ws!
         ws.send(JSON.stringify({
             event: Event.Ping,
-            cid: this.channelId,
+            cid: this.channels,
         }))
 
         // set isPinging flag and schedule it's test
@@ -98,13 +110,16 @@ export class Connection {
         const eventData = JSON.parse(event.data)
         // if eventData is array - it's either data payload or HeartBeat
         if (Array.isArray(eventData)) {
-            const data = eventData[1]
+            const [ch, data] = eventData
 
             // if HeartBeat - schedule connection test
             if (data === HEART_BEAT)
                 this.scheduleConnectionTest(HEARTBEAT_TIMEOUT)
-            else
-                this.handler(data)
+            else {
+                const channel = this.channels.find(c => c.id === ch)
+                if (channel)
+                    channel.handle(data)
+            }
 
             return
         }
@@ -118,8 +133,13 @@ export class Connection {
                 this.handleInfoEvent(eventData)
                 break
             case Event.Subscribed:
-                this.success(`subscribed to ${eventData.chanId}`)
-                this.channelId = eventData.chanId
+                const channel = this.channels.find(c => isMatch(eventData, c.subscription))
+                if (channel) {
+                    channel.id = eventData.chanId
+                    this.success(`subscribed to ${eventData.chanId}`)
+                }
+                else
+                    this.warning(`subscribed to unknown channel ${eventData.chanId}`)
                 break
             case Event.Pong:
                 this.success('pong')
@@ -164,8 +184,6 @@ export class Connection {
     private success = (msg: unknown) => toast.success(this.message(msg), MSG_LIFETIME)
 
     private message(msg: unknown) {
-        const { channel, subscription } = this
-
-        return `${channel} (${JSON.stringify(subscription)}): ${typeof msg === 'string' ? msg : JSON.stringify(msg)}`
+        return `Socket: ${typeof msg === 'string' ? msg : JSON.stringify(msg)}`
     }
 }

@@ -1,13 +1,16 @@
+import { Channel } from './Channel'
 import { Connection, Data } from './Connection'
 
+const connection = new Connection()
+connection.open()
 
 export const connect = (
-    channel: string,
+    name: string,
     subscription: Object,
     handler: (data: Data) => void,
 ) => {
-    const connection = new Connection(channel, subscription, handler)
-    connection.open()
+    const channel = new Channel(name, subscription, handler)
+    connection.attach(channel)
 
-    return connection.close
+    return () => connection.detach(channel)
 }
