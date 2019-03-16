@@ -7,10 +7,28 @@
 
 .head {
   flex: 1;
-  @include flex(row);
 }
 
 .main {
   flex: 5;
-  @include flex(row);
+}
+
+@media screen and (max-width: 767px) {
+  .head {
+    @include flex(column);
+  }
+
+  .main {
+    @include flex(column);
+  }
+}
+
+@media screen and (min-width: 767px) {
+  .head {
+    @include flex(row);
+  }
+
+  .main {
+    @include flex(row);
+  }
 }
